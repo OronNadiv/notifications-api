@@ -1,4 +1,4 @@
-import express from '../../initializations/express'
+import express from '../../src/initializations/express'
 import supertest from 'supertest-as-promised'
 import Promise from 'bluebird'
 

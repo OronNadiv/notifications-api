@@ -15,11 +15,11 @@
   },
   "scripts": {
     "babel": "rm -rf ./lib && mkdir ./lib && babel -L -D src/ --out-dir lib/",
-    "cover": "istanbul cover _mocha -- --recursive -t 10000",
+    "cover": "istanbul cover _mocha -- --require babel-core/register --recursive -t 10000",
     "lint": "eslint .",
     "start": "if [ \"$NODE_ENV\" = production ]; then node lib/app.js; else babel-node lib/app.js; fi",
-    "test": "mocha --recursive -t 10000 && npm run lint",
-    "test-coveralls": "istanbul cover _mocha --report lcovonly -- --recursive -t 10000 -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "test": "mocha --require babel-core/register --recursive -t 10000 && npm run lint",
+    "test-coveralls": "istanbul cover _mocha --report lcovonly -- --require babel-core/register --recursive -t 10000 -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "migrate": "./bin/migrate",
     "postinstall": "npm run babel && npm run migrate up"
   },
@@ -30,6 +30,7 @@
     "body-parser": "^1",
     "bookshelf": "^0.10",
     "cookie-parser": "^1",
+    "debug": "^2",
     "diehard": "^1",
     "eslint": "^3",
     "eslint-config-standard": "^5",
@@ -45,12 +46,13 @@
     "postgres-array": "^1",
     "twilio": "^2",
     "underscore": "^1",
-    "underscore.string": "^3",
-    "winston": "^2"
+    "underscore.string": "^3"
   },
   "devDependencies": {
     "chance": "^1",
     "coveralls": "^2",
+    "factory-girl": "^3",
+    "factory-girl-bookshelf": "^1",
     "istanbul": "^0.4",
     "mocha": "^3",
     "nock": "^8",

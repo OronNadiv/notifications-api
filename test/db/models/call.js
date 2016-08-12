@@ -1,7 +1,7 @@
 import Chance from 'chance'
 import nock from 'nock'
-import Call from '../../../db/models/call'
-import config from '../../../config'
+import Call from '../../../src/db/models/call'
+import config from '../../../src/config'
 
 const chance = Chance()
 

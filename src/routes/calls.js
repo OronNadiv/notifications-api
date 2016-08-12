@@ -1,9 +1,6 @@
-const path = require('path')
-const LOG_PREFIX = `"${path.basename(__filename)}":`
-const log = require('../logger')
-const verbose = log.verbose.bind(log, LOG_PREFIX)
-const warn = log.warn.bind(log, LOG_PREFIX)
-const error = log.error.bind(log, LOG_PREFIX)
+const verbose = require('debug')('ha:routes:calls:verbose')
+const warn = require('debug')('ha:routes:calls:warn')
+const error = require('debug')('ha:routes:calls:error')
 
 import {Router} from 'express'
 import _ from 'underscore'
@@ -33,13 +30,13 @@ authenticated.post('/calls', (req, res, next) => {
       const from = phone(config.twilio.from)[0] || config.twilio.from
       const text = req.body.text
       const toPhones = _.chain(postgresArray.parse(group.get('phones')))
-          .map(to => {
-            return _str.trim(to)
-          })
-          .map(to => {
-            return phone(to)[0] || to
-          })
-          .value()
+        .map(to => {
+          return _str.trim(to)
+        })
+        .map(to => {
+          return phone(to)[0] || to
+        })
+        .value()
 
       // API doc: https://www.twilio.com/docs/api/rest/making-calls
       return Promise.map(toPhones, to => {
@@ -50,17 +47,17 @@ authenticated.post('/calls', (req, res, next) => {
           url: url.resolve(config.serverUrl, 'calls/response'),
           record: false
         })
-            .then(response => {
-              verbose('Received response from twilio. to:', to, 'response:', response)
-              return Call.forge()
-                .save({
-                  from: from,
-                  to: to,
-                  sid: response.sid,
-                  text: text,
-                  data: response
-                })
-            })
+          .then(response => {
+            verbose('Received response from twilio. to:', to, 'response:', response)
+            return Call.forge()
+              .save({
+                from: from,
+                to: to,
+                sid: response.sid,
+                text: text,
+                data: response
+              })
+          })
       })
         .then(() => {
           res.sendStatus(204)

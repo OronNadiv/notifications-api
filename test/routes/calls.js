@@ -1,27 +1,32 @@
-const path = require('path')
-const LOG_PREFIX = `"${path.basename(__filename)}":`
-const log = require('../../logger')
-const info = log.info.bind(log, LOG_PREFIX)
+const info = require('debug')('ha:test:routes:calls:info')
 
-import Call from '../../db/models/call'
+import Call from '../../src/db/models/call'
 import Chance from 'chance'
 import Promise from 'bluebird'
 import Request from './request'
+import UserFixture from '../fixtures/user'
 import 'should'
 
 const chance = Chance()
+const userFixture = new UserFixture()
 
-let request
+let context
 
 describe('Calls route tests', () => {
   const sid = chance.string({pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'})
   const sentence = chance.sentence()
 
   before(() => {
-    return Promise.resolve(Request)
-      .then(req => {
-        request = req
+    return Promise
+      .resolve(userFixture.create('user'))
+      .then((res) => {
+        context = res
+        return Request
       })
+      .then(req => {
+        context.request = req
+      })
+
       .then(() => {
         return Call.forge().save({
           from: chance.phone(),
@@ -34,7 +39,7 @@ describe('Calls route tests', () => {
   })
 
   it('/Test calls - wrong sid', () => {
-    return request
+    return context.request
       .post('/calls/response')
       .set('Accept', 'application/xml')
       .set('x-forwarded-proto', 'https')
@@ -43,7 +48,7 @@ describe('Calls route tests', () => {
   })
 
   it('/Test calls', () => {
-    return request
+    return context.request
       .post('/calls/response')
       .set('Accept', 'application/xml')
       .set('x-forwarded-proto', 'https')
