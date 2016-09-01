@@ -1,10 +1,8 @@
-# Home Automation - Notifications Backend API
-This backend server manages the home automation's notifications.
-Notifications can be send over an email via [Mailgun][mailgun], or sms and phone call via [Twilio][twilio].
-Notifications will be sent in the following cases:
-1. While the alarm is armed, a motion has been detected by one or more motion sensors.
-1. While the alarm is armed, the garag door has been opened.
-1. The garage door has been left open for more than X minutes (where X can be configured in the [Garage Door API][garage-url] server.
+# Home Automation - Notifications API
+Back-end server that handles outgoing communications. Main functions are:
+* It sends emails using [Mailgun][mailgun] if garage door is left open, garage door is opening or motion is detected while alarm is armed.
+* It sends text messages using [Twilio][twilio] if one of the previous conditions are met.
+* It makes phone calls using [Twilio][twilio] if one of the previous conditions are met.
 
 [![JavaScript Style Guide][standard-image]][standard-url]
 [![Dependencies][dependencies-image]][dependencies-url]
