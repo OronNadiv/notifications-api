@@ -39,6 +39,8 @@ if (!config.serverUrl) {
   process.exit(1)
 }
 
+config.skipSSL = process.env.SKIP_SSL && process.env.SKIP_SSL.toUpperCase() === 'TRUE'
+
 config.twilio = {
   accountSid: process.env.TWILIO_ACCOUNT_SID,
   authToken: process.env.TWILIO_AUTH_TOKEN,
