@@ -1,7 +1,3 @@
-const verbose = require('debug')('ha:routes:calls:verbose')
-const warn = require('debug')('ha:routes:calls:warn')
-const error = require('debug')('ha:routes:calls:error')
-
 import {Router} from 'express'
 import _ from 'underscore'
 import _str from 'underscore.string'
@@ -13,6 +9,10 @@ import postgresArray from 'postgres-array'
 import Promise from 'bluebird'
 import Twilio from 'twilio'
 import url from 'url'
+
+const verbose = require('debug')('ha:routes:calls:verbose')
+const warn = require('debug')('ha:routes:calls:warn')
+const error = require('debug')('ha:routes:calls:error')
 
 export const authenticated = new Router()
 export const unauthenticated = new Router()

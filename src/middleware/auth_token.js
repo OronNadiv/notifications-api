@@ -1,7 +1,7 @@
-const info = require('debug')('ha:middleware:auth_token:info')
-
 import jwt from 'jsonwebtoken'
 import config from '../config'
+
+const info = require('debug')('ha:middleware:auth_token:info')
 
 export default (req, res, next) => {
   function sendUnauthenticated () {

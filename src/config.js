@@ -1,8 +1,8 @@
-const error = require('debug')('ha:config:error')
-
 import fs from 'fs'
 import knexPgCustomSchema from 'knex-pg-customschema'
 import path from 'path'
+
+const error = require('debug')('ha:config:error')
 
 const config = {production: process.env.NODE_ENV && process.env.NODE_ENV.toUpperCase() === 'PRODUCTION'}
 

@@ -1,7 +1,3 @@
-const verbose = require('debug')('ha:routes:emails:verbose')
-const info = require('debug')('ha:routes:emails:info')
-const warn = require('debug')('ha:routes:emails:warn')
-
 import {Router} from 'express'
 import _str from 'underscore.string'
 import config from '../config'
@@ -9,6 +5,10 @@ import Group from '../db/models/group'
 import Mailgun from 'mailgun-js'
 import postgresArray from 'postgres-array'
 import Promise from 'bluebird'
+
+const verbose = require('debug')('ha:routes:emails:verbose')
+const info = require('debug')('ha:routes:emails:info')
+const warn = require('debug')('ha:routes:emails:warn')
 
 const mailgun = Mailgun({apiKey: config.mailgun.apiKey, domain: config.mailgun.domain})
 const router = new Router()

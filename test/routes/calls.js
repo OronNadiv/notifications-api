@@ -1,11 +1,11 @@
-const info = require('debug')('ha:test:routes:calls:info')
-
 import Call from '../../src/db/models/call'
 import Chance from 'chance'
 import Promise from 'bluebird'
 import Request from './request'
 import UserFixture from '../fixtures/user'
 import 'should'
+
+const info = require('debug')('ha:test:routes:calls:info')
 
 const chance = Chance()
 const userFixture = new UserFixture()

@@ -1,6 +1,3 @@
-const verbose = require('debug')('ha:routes:sms:verbose')
-const warn = require('debug')('ha:routes:sms:warn')
-
 import {Router} from 'express'
 import _ from 'underscore'
 import _str from 'underscore.string'
@@ -10,6 +7,9 @@ import phone from 'phone'
 import postgresArray from 'postgres-array'
 import Promise from 'bluebird'
 import Twilio from 'twilio'
+
+const verbose = require('debug')('ha:routes:sms:verbose')
+const warn = require('debug')('ha:routes:sms:warn')
 
 const router = new Router()
 
@@ -26,25 +26,25 @@ router.post('/sms', (req, res, next) => {
     .then(group => {
       const from = phone(config.twilio.from)[0] || config.twilio.from
       const toPhones = _.chain(postgresArray.parse(group.get('phones')))
-          .map(to => {
-            return _str.trim(to)
-          })
-          .map(to => {
-            return phone(to)[0] || to
-          })
-          .value()
+        .map(to => {
+          return _str.trim(to)
+        })
+        .map(to => {
+          return phone(to)[0] || to
+        })
+        .value()
 
       return Promise.map(toPhones, to => {
-          // https://www.twilio.com/docs/api/rest/sending-sms
+        // https://www.twilio.com/docs/api/rest/sending-sms
         verbose('Firing request to twilio. from:', from, 'to:', to)
         return Twilio().sendMessage({
           to: to,
           from: from,
           body: req.body.text
         })
-            .then(response => {
-              verbose('Received response from twilio. to:', to, 'response:', response)
-            })
+          .then(response => {
+            verbose('Received response from twilio. to:', to, 'response:', response)
+          })
       })
         .then(() => {
           res.sendStatus(204)

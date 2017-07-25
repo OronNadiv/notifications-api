@@ -1,6 +1,3 @@
-const verbose = require('debug')('ha:db:models:call:verbose')
-const warn = require('debug')('ha:db:models:call:warn')
-
 import _ from 'underscore'
 import _str from 'underscore.string'
 import Bookshelf from '../bookshelf'
@@ -9,6 +6,9 @@ import phone from 'phone'
 import Promise from 'bluebird'
 import Twillio from 'twilio'
 import url from 'url'
+
+const verbose = require('debug')('ha:db:models:call:verbose')
+const warn = require('debug')('ha:db:models:call:warn')
 
 const call = Bookshelf.Model.extend({
   tableName: 'calls',

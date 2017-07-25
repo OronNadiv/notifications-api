@@ -66,7 +66,7 @@ describe('Call Model', () => {
          subresourceUris:
          { notifications: '/2010-04-01/Accounts/XXX/Calls/YYY/Notifications.json',
          recordings: '/2010-04-01/Accounts/XXX/Calls/YYY/Recordings.json' }
-         }*/
+         } */
         return {
           'sid': callSid,
           'account_sid': config.twilio.accountSid,

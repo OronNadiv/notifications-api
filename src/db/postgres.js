@@ -1,8 +1,8 @@
-const verbose = require('debug')('ha:db:postgres:verbose')
-const error = require('debug')('ha:db:postgres:error')
-
 import config from '../config'
 import pg from 'pg'
+
+const verbose = require('debug')('ha:db:postgres:verbose')
+const error = require('debug')('ha:db:postgres:error')
 
 const db = new pg.Client(config.postgres)
 
