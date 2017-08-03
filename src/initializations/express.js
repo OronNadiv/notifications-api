@@ -14,6 +14,7 @@ import xHeaders from './../middleware/x_headers'
 
 const verbose = require('debug')('ha:initializations:express:verbose')
 const info = require('debug')('ha:initializations:express:info')
+const warn = require('debug')('ha:initializations:express:warn')
 const error = require('debug')('ha:initializations:express:error')
 
 const app = express()
@@ -40,7 +41,7 @@ export default {
       app.use((err, req, res) => {
         if (!(err instanceof Error)) {
           // req is actually res.
-          error('unknown request.  See logs for more details.')
+          warn('unknown request.  See logs for more details.')
           return req.sendStatus(404)
         }
         error('sending Error.  Err: ', err)
