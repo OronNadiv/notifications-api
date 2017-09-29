@@ -1,5 +1,4 @@
 import fs from 'fs'
-import knexPgCustomSchema from 'knex-pg-customschema'
 import path from 'path'
 
 const error = require('debug')('ha:config:error')
@@ -28,7 +27,7 @@ config.postgresPool = {
   min: parseInt(process.env.POSTGRESPOOLMIN || 2, 10),
   max: parseInt(process.env.POSTGRESPOOLMAX || 10, 10),
   log: process.env.POSTGRESPOOLLOG === 'true',
-  afterCreate: knexPgCustomSchema('notifications')
+  afterCreate: (connection, cb) => connection.query(`SET SESSION SCHEMA 'notifications';`, cb)
 }
 
 config.serverUrl = process.env.SERVER_URL || (config.production ? null : `http://localhost:${config.port}`)
