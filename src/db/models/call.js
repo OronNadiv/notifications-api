@@ -4,11 +4,13 @@ import Bookshelf from '../bookshelf'
 import config from '../../config'
 import phone from 'phone'
 import Promise from 'bluebird'
-import Twillio from 'twilio'
+import Twilio from 'twilio'
 import url from 'url'
 
 const verbose = require('debug')('ha:db:models:call:verbose')
 const warn = require('debug')('ha:db:models:call:warn')
+
+const client = new Twilio()
 
 const call = Bookshelf.Model.extend({
   tableName: 'calls',
@@ -34,12 +36,12 @@ call.make = text => {
   // API doc: https://www.twilio.com/docs/api/rest/making-calls
   return Promise.map(toPhones, to => {
     verbose('Firing request to twilio.')
-    return Twillio().makeCall({
-      to: to,
-      from: from,
-      url: url.resolve(config.serverUrl, 'calls'),
-      record: false
-    })
+    return client.calls
+      .create({
+        to: to,
+        from: from,
+        url: url.resolve(config.serverUrl, 'calls')
+      })
       .then(response => {
         verbose('Received response from twilio. to:', to, 'response:', response)
         return call.forge()

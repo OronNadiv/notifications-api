@@ -1,4 +1,4 @@
-import {Router} from 'express'
+import { Router } from 'express'
 import _ from 'underscore'
 import _str from 'underscore.string'
 import config from '../config'
@@ -11,6 +11,7 @@ import Twilio from 'twilio'
 const verbose = require('debug')('ha:routes:sms:verbose')
 const warn = require('debug')('ha:routes:sms:warn')
 
+const client = new Twilio()
 const router = new Router()
 
 router.post('/sms', (req, res, next) => {
@@ -34,18 +35,20 @@ router.post('/sms', (req, res, next) => {
         })
         .value()
 
-      return Promise.map(toPhones, to => {
-        // https://www.twilio.com/docs/api/rest/sending-sms
-        verbose('Firing request to twilio. from:', from, 'to:', to)
-        return Twilio().sendMessage({
-          to: to,
-          from: from,
-          body: req.body.text
+      return Promise
+        .map(toPhones, to => {
+          // https://www.twilio.com/docs/api/rest/sending-sms
+          verbose('Firing request to twilio. from:', from, 'to:', to)
+          return client.messages
+            .create({
+              to: to,
+              from: from,
+              body: req.body.text
+            })
+            .then(response => {
+              verbose('Received response from twilio. to:', to, 'response:', response)
+            })
         })
-          .then(response => {
-            verbose('Received response from twilio. to:', to, 'response:', response)
-          })
-      })
         .then(() => {
           res.sendStatus(204)
         })

@@ -1,4 +1,4 @@
-import {Router} from 'express'
+import { Router } from 'express'
 import _ from 'underscore'
 import _str from 'underscore.string'
 import Call from '../db/models/call'
@@ -14,6 +14,7 @@ const verbose = require('debug')('ha:routes:calls:verbose')
 const warn = require('debug')('ha:routes:calls:warn')
 const error = require('debug')('ha:routes:calls:error')
 
+const client = new Twilio()
 export const authenticated = new Router()
 export const unauthenticated = new Router()
 
@@ -41,12 +42,12 @@ authenticated.post('/calls', (req, res, next) => {
       // API doc: https://www.twilio.com/docs/api/rest/making-calls
       return Promise.map(toPhones, to => {
         verbose('Firing request to twilio.')
-        return Twilio().makeCall({
-          to: to,
-          from: from,
-          url: url.resolve(config.serverUrl, 'calls/response'),
-          record: false
-        })
+        return client.calls
+          .create({
+            to,
+            from,
+            url: url.resolve(config.serverUrl, 'calls/response')
+          })
           .then(response => {
             verbose('Received response from twilio. to:', to, 'response:', response)
             return Call.forge()
@@ -79,7 +80,9 @@ unauthenticated.post('/calls/response', (req, res, next) => {
         error('call could not be found. sid:', req.body.CallSid)
         return res.sendStatus(404)
       }
-      const resp = new Twilio.TwimlResponse()
+
+      const VoiceResponse = client.twiml.VoiceResponse
+      const resp = new VoiceResponse()
 
       verbose('req.body:', req.body)
       resp.pause({length: 2})
