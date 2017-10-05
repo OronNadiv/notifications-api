@@ -1,5 +1,5 @@
 import express from '../../src/initializations/express'
-import supertest from 'supertest-as-promised'
+import supertest from 'supertest'
 import Promise from 'bluebird'
 
 export default Promise

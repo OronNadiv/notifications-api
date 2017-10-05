@@ -6,6 +6,7 @@ import phone from 'phone'
 import Promise from 'bluebird'
 import Twilio from 'twilio'
 import url from 'url'
+import circularJSON from 'circular-json'
 
 const verbose = require('debug')('ha:db:models:call:verbose')
 const warn = require('debug')('ha:db:models:call:warn')
@@ -38,19 +39,20 @@ call.make = text => {
     verbose('Firing request to twilio.')
     return client.calls
       .create({
-        to: to,
-        from: from,
+        to,
+        from,
         url: url.resolve(config.serverUrl, 'calls')
       })
       .then(response => {
-        verbose('Received response from twilio. to:', to, 'response:', response)
+        verbose('Received response from twilio.',
+          'to:', to, 'response:', response)
         return call.forge()
           .save({
-            from: from,
-            to: to,
+            from,
+            to,
             sid: response.sid,
-            text: text,
-            data: response
+            text,
+            data: circularJSON.stringify(response)
           })
       })
   })

@@ -7,9 +7,6 @@ const chance = Chance()
 
 describe('Call Model', () => {
   before(() => {
-    config.twilioAccountSid = 'fake twilio account sid'
-    config.twilioAuthToken = 'fake twilio auth token'
-
     const from = chance.phone()
     const to = `${chance.phone()} , ${chance.phone()} , ${chance.phone()} , ${chance.phone()}`
     const callSid = chance.string({pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'})
@@ -70,7 +67,7 @@ describe('Call Model', () => {
         return {
           'sid': callSid,
           'account_sid': config.twilio.accountSid,
-          'accountSid': config.twilioAccountSid,
+          'accountSid': config.twilio.accountSid,
           'to': to,
           'from': from,
           'call_sid': callSid,
