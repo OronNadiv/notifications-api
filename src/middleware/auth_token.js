@@ -32,6 +32,7 @@ export default (req, res, next) => {
     // token is valid
 
     req.client = payload
+    req.client.token = token
     return next()
   })
 }
