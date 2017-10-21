@@ -1,4 +1,4 @@
-import {Router} from 'express'
+import { Router } from 'express'
 import _str from 'underscore.string'
 import config from '../config'
 import Group from '../db/models/group'
@@ -10,7 +10,8 @@ const verbose = require('debug')('ha:routes:emails:verbose')
 const info = require('debug')('ha:routes:emails:info')
 const warn = require('debug')('ha:routes:emails:warn')
 
-const mailgun = Mailgun({apiKey: config.mailgun.apiKey, domain: config.mailgun.domain})
+let mailgunClient
+
 const router = new Router()
 
 router.post('/emails', (req, res, next) => {
@@ -34,7 +35,9 @@ router.post('/emails', (req, res, next) => {
       }
 
       verbose('Sending email. Data:', data)
-      return mailgun.messages().send(data)
+      mailgunClient = mailgunClient || Mailgun({apiKey: config.mailgun.apiKey, domain: config.mailgun.domain})
+
+      return mailgunClient.messages().send(data)
         .then(resp => {
           verbose('mailgun response:', resp)
           info(

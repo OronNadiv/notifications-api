@@ -11,7 +11,8 @@ import Twilio from 'twilio'
 const verbose = require('debug')('ha:routes:sms:verbose')
 const warn = require('debug')('ha:routes:sms:warn')
 
-const client = new Twilio()
+let twilioClient
+
 const router = new Router()
 
 router.post('/sms', (req, res, next) => {
@@ -39,7 +40,11 @@ router.post('/sms', (req, res, next) => {
         .map(toPhones, to => {
           // https://www.twilio.com/docs/api/rest/sending-sms
           verbose('Firing request to twilio. from:', from, 'to:', to)
-          return client.messages
+
+          twilioClient = twilioClient || new Twilio()
+
+          return twilioClient
+            .messages
             .create({
               to: to,
               from: from,

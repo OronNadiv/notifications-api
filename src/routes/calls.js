@@ -14,7 +14,8 @@ const verbose = require('debug')('ha:routes:calls:verbose')
 const warn = require('debug')('ha:routes:calls:warn')
 const error = require('debug')('ha:routes:calls:error')
 
-const client = new Twilio()
+let twilioClient
+
 export const authenticated = new Router()
 export const unauthenticated = new Router()
 
@@ -23,6 +24,7 @@ authenticated.post('/calls', (req, res, next) => {
     warn('Not making phone call')
     return res.sendStatus(204)
   }
+
   Promise
     .resolve(Group.forge().query(qb => {
       qb.where('id', '=', req.client.group_id)
@@ -42,20 +44,29 @@ authenticated.post('/calls', (req, res, next) => {
       // API doc: https://www.twilio.com/docs/api/rest/making-calls
       return Promise.map(toPhones, to => {
         verbose('Firing request to twilio.')
-        return client.calls
+        twilioClient = twilioClient || new Twilio()
+        return twilioClient
+          .calls
           .create({
             to,
             from,
             url: url.resolve(config.serverUrl, 'calls/response')
           })
           .then(response => {
-            verbose('Received response from twilio. to:', to, 'response:', response)
+            Object.keys(response).forEach(key => {
+              if (key.startsWith('_')) {
+                delete response[key]
+              }
+            })
+            verbose('Received response from twilio (after removing metadata).',
+              'response:', response)
+
             return Call.forge()
               .save({
-                from: from,
-                to: to,
+                from,
+                to,
                 sid: response.sid,
-                text: text,
+                text,
                 data: response
               })
           })
@@ -81,22 +92,21 @@ unauthenticated.post('/calls/response', (req, res, next) => {
         return res.sendStatus(404)
       }
 
-      const VoiceResponse = client.twiml.VoiceResponse
+      const VoiceResponse = Twilio.twiml.VoiceResponse
       const resp = new VoiceResponse()
 
       verbose('req.body:', req.body)
       resp.pause({length: 2})
-        .say(call.get('text'), {
-          voice: 'woman',
-          language: 'en-gb'
-        })
-        .pause({length: 2})
-        .say(call.get('text'), {
-          voice: 'woman',
-          language: 'en-gb'
-        })
-        .hangup()
-      res.type('text/xml')
+      resp.say({
+        voice: 'woman',
+        language: 'en-gb'
+      }, call.get('text'))
+      resp.pause({length: 2})
+      resp.say({
+        voice: 'woman',
+        language: 'en-gb'
+      }, call.get('text'))
+      resp.hangup()
       const subject = resp.toString()
       verbose('sending response. subject:', subject)
       res.send(subject)
