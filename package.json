@@ -39,7 +39,7 @@
     "pg": "^7.4.1",
     "phone": "^1",
     "postgres-array": "^1.0.2",
-    "twilio": "^3.11.0",
+    "twilio": "^3.11.2",
     "underscore": "^1.8.3",
     "underscore.string": "^3.3.4"
   },
