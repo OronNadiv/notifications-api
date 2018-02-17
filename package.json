@@ -33,8 +33,8 @@
     "debug": "^3.1.0",
     "diehard": "^1.5.2",
     "express": "^4.16.2",
-    "jsonwebtoken": "^8.1.0",
-    "knex": "^0.14.2",
+    "jsonwebtoken": "^8.1.1",
+    "knex": "^0.14.3",
     "mailgun-js": "^0.13.1",
     "pg": "^7.4.1",
     "phone": "^1",
@@ -47,7 +47,7 @@
     "chance": "^1.0.13",
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.3",
-    "eslint": "^4.15.0",
+    "eslint": "^4.18.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-mocha": "^4.11.0",
@@ -59,7 +59,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^4.1.0",
     "nock": "^9.1.6",
-    "should": "^13.2.0",
+    "should": "^13.2.1",
     "supertest": "^3.0.0"
   },
   "babel": {
